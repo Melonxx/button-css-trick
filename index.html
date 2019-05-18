@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .input {
+            padding: 2em 10em;
+            border-radius: .3em;
+            position: relative;
+            background-color: rgb(189, 86, 86);
+            display: inline-block;
+            overflow: hidden;
+        }
+        
+        .input1::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            background-color: rgba(0, 0, 0, 0.45);
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: all 0.4s ease-in-out;
+            z-index: 1111;
+            transform: translate(-50%, -50%)
+        }
+    </style>
+    <style>
+        div {
+            color: red;
+        }
+        
+        .red {
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div onclick="fn(event)" class="input">
+        <p>
+            <span>这是一个按钮具有</span>
+        </p>
+        <p>
+            <span>涟漪效果</span>
+        </p>
+        <p>
+            <span>但是不要瞎点</span>
+        </p>
+        <p>
+            <span>因为有bug</span>
+        </p>
+    </div>
+    <script>
+        function ruleSelector(selector) {
+            function uni(selector) {
+                return selector.replace(/::/g, ':')
+            }
+            // es6
+            return Array.from(document.styleSheets).reduce((a, b) => {
+                    return a.concat(Array.from(b.cssRules))
+                }, []).filter(x => {
+                    return uni(x.selectorText) === uni(selector);
+                })
+                // es5
+                // return Array.prototype.filter.call(Array.prototype.concat.apply([], Array.prototype.map.call(document.styleSheets, function (x) {
+                //   return Array.prototype.slice.call(x.cssRules);
+                // })), function (x) {
+                //   return uni(x.selectorText) === uni(selector);
+                // });
+        }
+
+        function fn(e) {
+            ruleSelector('.input1:after')[0].style.top = e.y + 'px'
+            ruleSelector('.input1:after')[0].style.left = e.x + 'px'
+            document.querySelector('.input').className = 'input input1'
+            aa()
+        }
+        var time1, time2
+
+        function aa() {
+            clearTimeout(time1)
+            clearTimeout(time2)
+            timer1 = setTimeout(() => {
+                ruleSelector('.input1:after')[0].style.width = '100em'
+                ruleSelector('.input1:after')[0].style.height = '100em'
+                ruleSelector('.input1:after')[0].style.backgroundColor = 'transparent';
+            })
+            timer2 = setTimeout(() => {
+                document.querySelector('.input').className = 'input'
+                ruleSelector('.input1:after')[0].style.width = '0'
+                ruleSelector('.input1:after')[0].style.height = '0'
+                ruleSelector('.input1:after')[0].style.backgroundColor = 'rgba(0, 0, 0, 0.45)';
+            }, 600)
+        }
+    </script>
+</body>
+
+</html>
